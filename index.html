@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Woofswap - NFT Factory & Management</title>
+    <link href="https://fonts rightfully.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff9100;
+            --secondary-color: #ff6f61;
+            --gradient-bg: linear-gradient(180deg, #1e1e2f 0%, #2a2a3d 100%);
+            --card-bg: #2c2f48;
+            --input-bg: #373b5c;
+            --text-color: #ffffff;
+            --border-radius: 15px;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-color);
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border-radius: var(--border-radius);
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(90deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            padding: 12px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .connect-section button {
+            padding: 12px;
+            background: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: background 0.2s;
+            margin-bottom: 10px;
+        }
+        .connect-section button:hover { background: #e68a00; }
+        .input-box {
+            background: var(--input-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+        }
+        .input-box label {
+            display: block;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            background: var(--input-bg);
+            border: none;
+            border-radius: 10px;
+            color: var(--text-color);
+            font-size: 1em;
+        }
+        .action-button {
+            padding: 15px;
+            background: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: background 0.2s;
+            margin-bottom: 10px;
+        }
+        .action-button:disabled {
+            background: #4a4f7a;
+            cursor: not-allowed;
+        }
+        .action-button:hover:not(:disabled) { background: #e68a00; }
+        .status {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        .nft-info, .created-nfts {
+            background: var(--input-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+        }
+        .nft-info p, .created-nfts p {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .created-nfts ul {
+            list-style: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .created-nfts li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            font-size: 0.9em;
+        }
+        .copy-button {
+            padding: 5px 10px;
+            background: #4a4f7a;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: var(--text-color);
+            font-size: 0.8em;
+        }
+        .copy-button:hover { background: #5a5f8a; }
+        .dog-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .dog-section img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        .dog-message {
+            font-size: 0.9em;
+            color: var(--secondary-color);
+            font-style: italic;
+        }
+        .nft-preview {
+            margin-top: 10px;
+            text-align: center;
+        }
+        .nft-preview img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .container { padding: 15px; }
+            .header { font-size: 1.1em; }
+            .dog-section img { width: 50px; height: 50px; }
+            .dog-message { font-size: 0.8em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Woofswap - NFT Factory & Management</div>
+        <div class="connect-section">
+            <button id="connectWalletButton">Connect Wallet</button>
+            <div id="networkStatus" class="status">Click to connect...</div>
+        </div>
+        <div class="input-box">
+            <label>Create New NFT Contract</label>
+            <div class="input-box">
+                <label for="nftName">NFT Name (e.g., My Awesome NFT)</label>
+                <input type="text" id="nftName" placeholder="e.g., My Awesome NFT">
+            </div>
+            <div class="input-box">
+                <label for="nftSymbol">NFT Symbol (e.g., MANFT)</label>
+                <input type="text" id="nftSymbol" placeholder="e.g., MANFT">
+            </div>
+            <div class="input-box">
+                <label for="maxSupply">Max Supply (e.g., 10000)</label>
+                <input type="number" id="maxSupply" placeholder="e.g., 10000" min="1">
+            </div>
+            <div class="input-box">
+                <label for="paymentType">Payment Type</label>
+                <select id="paymentType">
+                    <option value="BONE">BONE (Native)</option>
+                    <option value="Token">ERC20 Token</option>
+                </select>
+            </div>
+            <div class="input-box">
+                <label for="paymentToken">Payment Token Address</label>
+                <input type="text" id="paymentToken" placeholder="e.g., 0x..." value="0x0000000000000000000000000000000000000000" readonly>
+            </div>
+            <div class="input-box">
+                <label for="paymentAmount">Mint Price (in BONE or Tokens)</label>
+                <input type="number" id="paymentAmount" placeholder="e.g., 100" step="0.000000000000000001">
+            </div>
+            <button class="action-button" id="createButton" onclick="createNFTContract()">Create NFT Contract</button>
+        </div>
+        <div class="created-nfts">
+            <label>Your Created NFT Contracts (Latest 10)</label>
+            <ul id="createdContractsList"></ul>
+        </div>
+        <div class="input-box">
+            <label>Manage NFT Contract</label>
+            <div class="input-box">
+                <label for="nftContractAddress">NFT Contract Address</label>
+                <input type="text" id="nftContractAddress" placeholder="e.g., 0x...">
+            </div>
+            <div class="nft-info" id="nftInfo" style="display: none;">
+                <p id="nftInfoName"></p>
+                <p id="nftInfoSymbol"></p>
+                <p id="nftInfoMaxSupply"></p>
+                <p id="nftInfoPaymentToken"></p>
+                <p id="nftInfoPaymentAmount"></p>
+                <p id="nftInfoTotalSupply"></p>
+                <p id="nftInfoOwner"></p>
+            </div>
+            <div class="input-box">
+                <label for="baseURI">Base URI (e.g., https://ipfs.io/ipfs/Qm.../)</label>
+                <input type="text" id="baseURI" placeholder="e.g., https://ipfs.io/ipfs/Qm.../">
+            </div>
+            <button class="action-button" id="setBaseURIButton" onclick="setBaseURI()">Set Base URI</button>
+            <button class="action-button" id="mintButton" onclick="mintNFT()">Mint NFT</button>
+            <div class="nft-info">
+                <label>Owned NFTs</label>
+                <ul id="ownedNFTsList"></ul>
+            </div>
+            <div class="nft-preview" id="nftPreview" style="display: none;">
+                <p>NFT Preview</p>
+                <img id="nftImage" src="" alt="NFT Preview">
+            </div>
+        </div>
+        <div class="dog-section">
+            <img src="https://raw.githubusercontent.com/Shibfun/ChainBridge/refs/heads/main/images/shiba.gif" alt="Shiba Dog">
+            <div class="dog-message" id="dogMessage">Woof! Connect your wallet to start creating NFTs, pup!</div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
+    <script>
+        const factoryAddress = '0x4229F17aFEC883eE91D196B2815cbB4C7FDA6211';
+        const factoryAbi = [
+            {"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint256","name":"maxSupply","type":"uint256"},{"internalType":"address","name":"paymentToken","type":"address"},{"internalType":"uint256","name":"mintPrice","type":"uint256"}],"name":"createNFT","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"nonpayable","type":"function"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"creator","type":"address"},{"indexed":true,"internalType":"address","name":"nftContract","type":"address"},{"indexed":false,"internalType":"string","name":"name","type":"string"},{"indexed":false,"internalType":"string","name":"symbol","type":"string"},{"indexed":false,"internalType":"uint256","name":"maxSupply","type":"uint256"},{"indexed":false,"internalType":"address","name":"paymentToken","type":"address"},{"indexed":false,"internalType":"uint256","name":"mintPrice","type":"uint256"}],"name":"NFTContractCreated","type":"event"},
+            {"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"getUserContracts","outputs":[{"internalType":"address[]","name":"","type":"address[]"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"getLatestUserContracts","outputs":[{"internalType":"address[10]","name":"","type":"address[10]"}],"stateMutability":"view","type":"function"}
+        ];
+        const nftAbi = [
+            {"inputs":[],"name":"mintNFT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"payable","type":"function"},
+            {"inputs":[{"internalType":"string","name":"_newBaseURI","type":"string"}],"name":"setBaseURI","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},
+            {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"balance","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"owner","type":"address"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"MAX_SUPPLY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"PAYMENT_TOKEN","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"MINT_PRICE","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"}
+        ];
+        const erc20Abi = [
+            {"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"type":"function"},
+            {"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"type":"function"},
+            {"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining","type":"uint256"}],"type":"function"}
+        ];
+
+        const chains = {
+            Shibarium: {
+                chainId: 109,
+                chainName: 'Shibarium',
+                rpcUrl: 'https://rpc.shibariumchain.com'
+            }
+        };
+
+        let web3, account, factoryContract, nftContract, paymentTokenContract;
+        const fromChain = 'Shibarium';
+
+        const dogMessages = {
+            connectSuccess: ["Woof! Wallet connected, ready to create NFTs, pup!", "Arf! You're in, let's make some NFTs!", "Bark! Wallet's ready, time to create!"],
+            connectFail: ["Woof! Couldn't connect wallet, try again, pup!", "Arf! Wallet connection failed, give it another go!", "Bark! Something went wrong, check your wallet!"],
+            createStart: ["Woof! Creating your NFT contract, hold tight, pup!", "Arf! Building your NFT contract now!", "Bark! Contract creation in progress!"],
+            createSuccess: ["Woof! NFT contract created, you're a master, pup!", "Arf! New contract deployed, check it out!", "Bark! Success! Your contract is live!"],
+            createFail: ["Woof! Contract creation failed, check inputs, pup!", "Arf! Something went wrong, try again!", "Bark! Creation hit a snag, review and retry!"],
+            createNoInput: ["Woof! Fill in all fields to create, pup!", "Arf! Can't create with empty fields!", "Bark! Need all details to make a contract!"],
+            mintStart: ["Woof! Minting your NFT, hold tight, pup!", "Arf! Crafting your NFT now!", "Bark! Minting in progress!"],
+            mintSuccess: ["Woof! NFT minted, you're a collector, pup!", "Arf! Your NFT is ready, check it out!", "Bark! Success! NFT created!"],
+            mintFail: ["Woof! Minting failed, check details, pup!", "Arf! Something went wrong, try again!", "Bark! Minting hit a snag, retry!"],
+            noInput: ["Woof! Enter all required fields, pup!", "Arf! Can't proceed with empty fields!", "Bark! Need all details to continue!"],
+            userDenied: ["Woof! You canceled the transaction, pup!", "Arf! Transaction denied, try again when ready!", "Bark! You said no, let's try again!"],
+            invalidContract: ["Woof! Invalid NFT contract address, check it, pup!", "Arf! That contract doesn't exist, try another!", "Bark! Bad contract address, fix it!"],
+            paymentTypeBONE: ["Woof! Using BONE for payment, pup!", "Arf! BONE selected, ready to roll!", "Bark! Native BONE payment, let's go!"],
+            paymentTypeToken: ["Woof! Using ERC20 token for payment, pup!", "Arf! Token selected, enter the address!", "Bark! Custom token payment, ready!"],
+            networkFail: ["Woof! Failed to switch to Shibarium, pup!", "Arf! Network switch failed, try again!", "Bark! Can't connect to Shibarium, check your settings!"],
+            setBaseURIStart: ["Woof! Setting Base URI, hold tight, pup!", "Arf! Updating Base URI now!", "Bark! Base URI update in progress!"],
+            setBaseURISuccess: ["Woof! Base URI set, looking good, pup!", "Arf! Base URI updated, check it out!", "Bark! Success! Base URI is live!"],
+            setBaseURIFail: ["Woof! Failed to set Base URI, try again, pup!", "Arf! Something went wrong with Base URI, retry!", "Bark! Base URI update failed, check inputs!"]
+        };
+
+        function getRandomMessage(type) {
+            const messages = dogMessages[type];
+            return messages[Math.floor(Math.random() * messages.length)];
+        }
+
+        async function initializeWeb3() {
+            const status = document.getElementById('networkStatus');
+            const dogMessage = document.getElementById('dogMessage');
+
+            if (!window.ethereum) {
+                status.innerText = 'Please install MetaMask';
+                dogMessage.innerText = 'Woof! MetaMask not found, pup!';
+                return;
+            }
+
+            try {
+                web3 = new Web3(window.ethereum);
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                account = accounts[0];
+                document.getElementById('connectWalletButton').innerText = `Connected: ${account.slice(0, 6)}...${account.slice(-4)}`;
+
+                await switchNetwork(fromChain);
+                await initializeContracts();
+                await updateCreatedContracts();
+
+                status.innerText = `Connected to ${fromChain}`;
+                dogMessage.innerText = getRandomMessage('connectSuccess');
+            } catch (error) {
+                status.innerText = 'Failed to connect wallet';
+                dogMessage.innerText = getRandomMessage('connectFail');
+                console.error(error.message);
+            }
+        }
+
+        async function switchNetwork(chain) {
+            const chainConfig = chains[chain];
+            const status = document.getElementById('networkStatus');
+            const dogMessage = document.getElementById('dogMessage');
+
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: `0x${chainConfig.chainId.toString(16)}` }]
+                });
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [{
+                                chainId: `0x${chainConfig.chainId.toString(16)}`,
+                                chainName: chainConfig.chainName,
+                                rpcUrls: [chainConfig.rpcUrl],
+                                nativeCurrency: { name: chainConfig.chainName, symbol: 'BONE', decimals: 18 },
+                                blockExplorerUrls: ['https://shibariumscan.io']
+                            }]
+                        });
+                    } catch (addError) {
+                        status.innerText = 'Failed to add Shibarium network';
+                        dogMessage.innerText = getRandomMessage('networkFail');
+                        console.error(addError.message);
+                        throw addError;
+                    }
+                } else {
+                    status.innerText = 'Failed to switch to Shibarium';
+                    dogMessage.innerText = getRandomMessage('networkFail');
+                    console.error(switchError.message);
+                    throw switchError;
+                }
+            }
+        }
+
+        async function initializeContracts() {
+            factoryContract = new web3.eth.Contract(factoryAbi, factoryAddress);
+            nftContract = null;
+            paymentTokenContract = null;
+            document.getElementById('nftInfo').style.display = 'none';
+            document.getElementById('nftPreview').style.display = 'none';
+        }
+
+        async function updateNFTInfo(contractAddress) {
+            if (!web3 || !web3.utils.isAddress(contractAddress)) {
+                document.getElementById('nftInfo').style.display = 'none';
+                document.getElementById('nftPreview').style.display = 'none';
+                document.getElementById('dogMessage').innerText = getRandomMessage('invalidContract');
+                return;
+            }
+            try {
+                nftContract = new web3.eth.Contract(nftAbi, contractAddress);
+                const [name, symbol, maxSupply, paymentToken, paymentAmount, totalSupply, owner] = await Promise.all([
+                    nftContract.methods.name().call(),
+                    nftContract.methods.symbol().call(),
+                    nftContract.methods.MAX_SUPPLY().call(),
+                    nftContract.methods.PAYMENT_TOKEN().call(),
+                    nftContract.methods.MINT_PRICE().call(),
+                    nftContract.methods.totalSupply().call(),
+                    nftContract.methods.owner().call()
+                ]);
+                document.getElementById('nftInfoName').innerText = `Name: ${name}`;
+                document.getElementById('nftInfoSymbol').innerText = `Symbol: ${symbol}`;
+                document.getElementById('nftInfoMaxSupply').innerText = `Max Supply: ${maxSupply}`;
+                document.getElementById('nftInfoPaymentToken').innerText = `Payment Token: ${paymentToken === '0x0000000000000000000000000000000000000000' ? 'BONE' : paymentToken}`;
+                document.getElementById('nftInfoPaymentAmount').innerText = `Mint Price: ${web3.utils.fromWei(paymentAmount, 'ether')} ${paymentToken === '0x0000000000000000000000000000000000000000' ? 'BONE' : 'tokens'}`;
+                document.getElementById('nftInfoTotalSupply').innerText = `Total Minted: ${totalSupply}`;
+                document.getElementById('nftInfoOwner').innerText = `Owner: ${owner}`;
+                document.getElementById('nftInfo').style.display = 'block';
+                await updateOwnedNFTs(contractAddress);
+            } catch (error) {
+                document.getElementById('nftInfo').style.display = 'none';
+                document.getElementById('dogMessage').innerText = getRandomMessage('invalidContract');
+                console.error(error.message);
+            }
+        }
+
+        async function updateCreatedContracts() {
+            if (!web3 || !account) return;
+            try {
+                const list = document.getElementById('createdContractsList');
+                list.innerHTML = '';
+                const contracts = await factoryContract.methods.getLatestUserContracts(account).call();
+                const validContracts = contracts.filter(addr => addr !== '0x0000000000000000000000000000000000000000');
+                if (validContracts.length === 0) {
+                    list.innerHTML = '<li>No contracts created yet.</li>';
+                    return;
+                }
+                for (const contractAddress of validContracts) {
+                    const nftContractTemp = new web3.eth.Contract(nftAbi, contractAddress);
+                    const name = await nftContractTemp.methods.name().call();
+                    const symbol = await nftContractTemp.methods.symbol().call();
+                    const li = document.createElement('li');
+                    li.innerText = `${name} (${symbol}) (${contractAddress.slice(0, 6)}...${contractAddress.slice(-4)})`;
+                    const copyButton = document.createElement('button');
+                    copyButton.className = 'copy-button';
+                    copyButton.innerText = 'Copy';
+                    copyButton.onclick = () => {
+                        navigator.clipboard.writeText(contractAddress);
+                        copyButton.innerText = 'Copied!';
+                        setTimeout(() => copyButton.innerText = 'Copy', 2000);
+                    };
+                    li.appendChild(copyButton);
+                    list.appendChild(li);
+                }
+            } catch (error) {
+                document.getElementById('createdContractsList').innerHTML = '<li>Error loading contracts.</li>';
+                console.error(error.message);
+            }
+        }
+
+        async function updateCreatedContractsWithRetry(maxRetries = 3, delay = 2000) {
+            for (let i = 0; i < maxRetries; i++) {
+                const list = document.getElementById('createdContractsList');
+                const currentLength = list.children.length;
+                await updateCreatedContracts();
+                if (list.children.length !== currentLength || list.children[0].innerText !== 'No contracts created yet.') {
+                    return;
+                }
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
+        }
+
+        async function updateOwnedNFTs(contractAddress) {
+            if (!web3 || !account || !web3.utils.isAddress(contractAddress)) return;
+            try {
+                nftContract = new web3.eth.Contract(nftAbi, contractAddress);
+                const list = document.getElementById('ownedNFTsList');
+                list.innerHTML = '';
+                const balance = await nftContract.methods.balanceOf(account).call();
+                if (parseInt(balance) === 0) {
+                    list.innerHTML = '<li>No NFTs owned yet.</li>';
+                    return;
+                }
+                const nfts = [];
+                for (let i = 0; i < parseInt(balance); i++) {
+                    const tokenId = await nftContract.methods.tokenOfOwnerByIndex(account, i).call().catch(() => null);
+                    if (tokenId) {
+                        const tokenURI = await nftContract.methods.tokenURI(tokenId).call();
+                        nfts.push({ tokenId, tokenURI });
+                    }
+                }
+                for (const nft of nfts) {
+                    const li = document.createElement('li');
+                    li.innerText = `NFT ID: ${nft.tokenId}`;
+                    const viewButton = document.createElement('button');
+                    viewButton.className = 'copy-button';
+                    viewButton.innerText = 'View';
+                    viewButton.onclick = () => {
+                        try {
+                            const json = JSON.parse(atob(nft.tokenURI.split(',')[1]));
+                            document.getElementById('nftImage').src = json.image;
+                            document.getElementById('nftPreview').style.display = 'block';
+                        } catch {
+                            document.getElementById('nftImage').src = nft.tokenURI;
+                            document.getElementById('nftPreview').style.display = 'block';
+                        }
+                    };
+                    li.appendChild(viewButton);
+                    list.appendChild(li);
+                }
+            } catch (error) {
+                document.getElementById('ownedNFTsList').innerHTML = '<li>Error loading NFTs.</li>';
+                console.error(error.message);
+            }
+        }
+
+        async function waitForTransaction(txHash) {
+            let receipt = null;
+            const maxAttempts = 30;
+            let attempts = 0;
+            while (attempts < maxAttempts) {
+                receipt = await web3.eth.getTransactionReceipt(txHash);
+                if (receipt) {
+                    if (receipt.status) return receipt;
+                    throw new Error(`Transaction ${txHash} failed`);
+                }
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                attempts++;
+            }
+            throw new Error(`Transaction ${txHash} not confirmed after ${maxAttempts} attempts`);
+        }
+
+        async function approveToken(paymentTokenAddress, contractAddress, amount) {
+            const tokenContract = new web3.eth.Contract(erc20Abi, paymentTokenAddress);
+            const allowance = await tokenContract.methods.allowance(account, contractAddress).call();
+            if (web3.utils.toBN(allowance).lt(web3.utils.toBN(amount))) {
+                const maxUint256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+                const approveTx = await tokenContract.methods.approve(contractAddress, maxUint256).send({ from: account, gas: web3.utils.toHex(100000) });
+                await waitForTransaction(approveTx.transactionHash);
+            }
+        }
+
+        async function createNFTContract() {
+            const status = document.getElementById('networkStatus');
+            const createButton = document.getElementById('createButton');
+            const dogMessage = document.getElementById('dogMessage');
+
+            if (!web3 || !account) {
+                status.innerText = "Please connect wallet first.";
+                dogMessage.innerText = getRandomMessage('connectFail');
+                return;
+            }
+
+            const name = document.getElementById('nftName').value.trim();
+            const symbol = document.getElementById('nftSymbol').value.trim();
+            const maxSupply = parseInt(document.getElementById('maxSupply').value);
+            const paymentType = document.getElementById('paymentType').value;
+            const paymentToken = document.getElementById('paymentToken').value.trim();
+            const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
+
+            if (!name || !symbol || !maxSupply || !paymentToken || !paymentAmount) {
+                status.innerText = "Please fill in all fields.";
+                dogMessage.innerText = getRandomMessage('createNoInput');
+                return;
+            }
+
+            if (!web3.utils.isAddress(paymentToken)) {
+                status.innerText = "Invalid payment token address.";
+                dogMessage.innerText = "Woof! That address doesn’t smell right, pup!";
+                return;
+            }
+
+            if (isNaN(maxSupply) || maxSupply <= 0) {
+                status.innerText = "Invalid max supply.";
+                dogMessage.innerText = "Woof! Max supply must be positive, pup!";
+                return;
+            }
+
+            if (isNaN(paymentAmount) || paymentAmount <= 0) {
+                status.innerText = "Invalid mint price.";
+                dogMessage.innerText = "Woof! Mint price must be positive, pup!";
+                return;
+            }
+
+            if (!/^[a-zA-Z0-9\s]+$/.test(name) || !/^[a-zA-Z0-9]+$/.test(symbol)) {
+                status.innerText = "Name and symbol must be alphanumeric.";
+                dogMessage.innerText = "Woof! Name and symbol can only contain letters and numbers, pup!";
+                return;
+            }
+
+            try {
+                createButton.disabled = true;
+                status.innerText = "Creating NFT contract...";
+                dogMessage.innerText = getRandomMessage('createStart');
+
+                const paymentAmountWei = web3.utils.toWei(paymentAmount.toString(), 'ether');
+                const tx = await factoryContract.methods.createNFT(name, symbol, maxSupply, paymentToken, paymentAmountWei).send({
+                    from: account,
+                    gas: web3.utils.toHex(3000000)
+                });
+
+                const receipt = await waitForTransaction(tx.transactionHash);
+                const contractAddress = receipt.events.NFTContractCreated.returnValues.nftContract;
+
+                status.innerText = `NFT contract created! Address: ${contractAddress}`;
+                dogMessage.innerText = getRandomMessage('createSuccess');
+                document.getElementById('nftContractAddress').value = contractAddress;
+                await updateNFTInfo(contractAddress);
+                await updateCreatedContractsWithRetry();
+            } catch (error) {
+                if (error.code === 4001) {
+                    status.innerText = "Transaction canceled by user.";
+                    dogMessage.innerText = getRandomMessage('userDenied');
+                } else {
+                    status.innerText = "Contract creation failed.";
+                    dogMessage.innerText = getRandomMessage('createFail');
+                    console.error(error.message);
+                }
+            } finally {
+                createButton.disabled = false;
+            }
+        }
+
+        async function mintNFT() {
+            const status = document.getElementById('networkStatus');
+            const mintButton = document.getElementById('mintButton');
+            const dogMessage = document.getElementById('dogMessage');
+
+            if (!web3 || !account) {
+                status.innerText = "Please connect wallet first.";
+                dogMessage.innerText = getRandomMessage('connectFail');
+                return;
+            }
+
+            const contractAddress = document.getElementById('nftContractAddress').value.trim();
+
+            if (!contractAddress || !web3.utils.isAddress(contractAddress)) {
+                status.innerText = "Invalid NFT contract address.";
+                dogMessage.innerText = getRandomMessage('invalidContract');
+                return;
+            }
+
+            try {
+                mintButton.disabled = true;
+                mintButton.innerText = "Checking...";
+                dogMessage.innerText = getRandomMessage('mintStart');
+
+                nftContract = new web3.eth.Contract(nftAbi, contractAddress);
+                const paymentTokenAddress = await nftContract.methods.PAYMENT_TOKEN().call();
+                const paymentAmount = await nftContract.methods.MINT_PRICE().call();
+                const totalSupply = await nftContract.methods.totalSupply().call();
+                const maxSupply = await nftContract.methods.MAX_SUPPLY().call();
+
+                if (parseInt(totalSupply) >= parseInt(maxSupply)) {
+                    status.innerText = "Max supply reached.";
+                    dogMessage.innerText = "Woof! No more NFTs can be minted, pup!";
+                    mintButton.innerText = "Mint NFT";
+                    mintButton.disabled = false;
+                    return;
+                }
+
+                if (paymentTokenAddress === '0x0000000000000000000000000000000000000000' && paymentAmount > 0) {
+                    const balance = await web3.eth.getBalance(account);
+                    if (web3.utils.toBN(balance).lt(web3.utils.toBN(paymentAmount))) {
+                        status.innerText = "Insufficient BONE balance.";
+                        dogMessage.innerText = "Woof! Not enough BONE, pup!";
+                        mintButton.innerText = "Mint NFT";
+                        mintButton.disabled = false;
+                        return;
+                    }
+                } else if (paymentTokenAddress !== '0x0000000000000000000000000000000000000000' && paymentAmount > 0) {
+                    paymentTokenContract = new web3.eth.Contract(erc20Abi, paymentTokenAddress);
+                    const balanceRaw = await paymentTokenContract.methods.balanceOf(account).call();
+                    if (web3.utils.toBN(balanceRaw).lt(web3.utils.toBN(paymentAmount))) {
+                        status.innerText = "Insufficient payment token balance.";
+                        dogMessage.innerText = "Woof! Not enough tokens, pup!";
+                        mintButton.innerText = "Mint NFT";
+                        mintButton.disabled = false;
+                        return;
+                    }
+
+                    mintButton.innerText = "Approving...";
+                    await approveToken(paymentTokenAddress, contractAddress, paymentAmount);
+                }
+
+                mintButton.innerText = "Minting...";
+                const tx = await nftContract.methods.mintNFT().send({
+                    from: account,
+                    gas: web3.utils.toHex(2000000),
+                    value: paymentTokenAddress === '0x0000000000000000000000000000000000000000' ? paymentAmount : 0
+                });
+
+                await waitForTransaction(tx.transactionHash);
+                status.innerText = "NFT minted successfully!";
+                dogMessage.innerText = getRandomMessage('mintSuccess');
+                await updateNFTInfo(contractAddress);
+            } catch (error) {
+                if (error.code === 4001) {
+                    status.innerText = "Transaction canceled by user.";
+                    dogMessage.innerText = getRandomMessage('userDenied');
+                } else {
+                    status.innerText = "Minting failed.";
+                    dogMessage.innerText = getRandomMessage('mintFail');
+                    console.error(error.message);
+                }
+            } finally {
+                mintButton.innerText = "Mint NFT";
+                mintButton.disabled = false;
+            }
+        }
+
+        async function setBaseURI() {
+            const status = document.getElementById('networkStatus');
+            const setBaseURIButton = document.getElementById('setBaseURIButton');
+            const dogMessage = document.getElementById('dogMessage');
+
+            if (!web3 || !account) {
+                status.innerText = "Please connect wallet first.";
+                dogMessage.innerText = getRandomMessage('connectFail');
+                return;
+            }
+
+            const contractAddress = document.getElementById('nftContractAddress').value.trim();
+            const baseURI = document.getElementById('baseURI').value.trim();
+
+            if (!contractAddress || !web3.utils.isAddress(contractAddress)) {
+                status.innerText = "Invalid NFT contract address.";
+                dogMessage.innerText = getRandomMessage('invalidContract');
+                return;
+            }
+
+            if (!baseURI) {
+                status.innerText = "Please enter a Base URI.";
+                dogMessage.innerText = getRandomMessage('noInput');
+                return;
+            }
+
+            try {
+                setBaseURIButton.disabled = true;
+                status.innerText = "Setting Base URI...";
+                dogMessage.innerText = getRandomMessage('setBaseURIStart');
+
+                nftContract = new web3.eth.Contract(nftAbi, contractAddress);
+                const owner = await nftContract.methods.owner().call();
+                if (owner.toLowerCase() !== account.toLowerCase()) {
+                    status.innerText = "Only the contract owner can set Base URI.";
+                    dogMessage.innerText = "Woof! You're not the owner, pup!";
+                    setBaseURIButton.disabled = false;
+                    return;
+                }
+
+                const tx = await nftContract.methods.setBaseURI(baseURI).send({
+                    from: account,
+                    gas: web3.utils.toHex(1000000)
+                });
+
+                await waitForTransaction(tx.transactionHash);
+                status.innerText = "Base URI set successfully!";
+                dogMessage.innerText = getRandomMessage('setBaseURISuccess');
+            } catch (error) {
+                if (error.code === 4001) {
+                    status.innerText = "Transaction canceled by user.";
+                    dogMessage.innerText = getRandomMessage('userDenied');
+                } else {
+                    status.innerText = "Failed to set Base URI.";
+                    dogMessage.innerText = getRandomMessage('setBaseURIFail');
+                    console.error(error.message);
+                }
+            } finally {
+                setBaseURIButton.disabled = false;
+            }
+        }
+
+        let debounceTimeout;
+        function debounce(func, delay) {
+            return function (...args) {
+                clearTimeout(debounceTimeout);
+                debounceTimeout = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+        document.getElementById('connectWalletButton').addEventListener('click', initializeWeb3);
+        document.getElementById('nftContractAddress').addEventListener('input', debounce(async () => {
+            const contractAddress = document.getElementById('nftContractAddress').value.trim();
+            await updateNFTInfo(contractAddress);
+        }, 500));
+        document.getElementById('paymentType').addEventListener('change', () => {
+            const paymentType = document.getElementById('paymentType').value;
+            const paymentTokenInput = document.getElementById('paymentToken');
+            if (paymentType === 'BONE') {
+                paymentTokenInput.value = '0x0000000000000000000000000000000000000000';
+                paymentTokenInput.readOnly = true;
+                paymentTokenInput.disabled = true;
+                document.getElementById('dogMessage').innerText = getRandomMessage('paymentTypeBONE');
+            } else {
+                paymentTokenInput.value = '';
+                paymentTokenInput.readOnly = false;
+                paymentTokenInput.disabled = false;
+                document.getElementById('dogMessage').innerText = getRandomMessage('paymentTypeToken');
+            }
+        });
+    </script>
+</body>
+</html>
