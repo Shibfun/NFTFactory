@@ -91,6 +91,12 @@
             color: var(--secondary-color);
             font-style: italic;
         }
+        pre {
+            background: #2c2f48;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
         @media (max-width: 480px) {
             body { padding: 10px; }
             .container { padding: 15px; }
@@ -105,15 +111,15 @@
         <div class="header">Woofswap NFT Factory - User Guide</div>
         <div class="section">
             <h2>Introduction</h2>
-            <p>Welcome to the Woofswap NFT Factory! This guide will help you create, manage, and mint NFTs on the Shibarium blockchain using our user-friendly interface. Follow the steps below to get started.</p>
+            <p>Welcome to the Woofswap NFT Factory! This guide explains how to create, manage, and mint NFTs on the Shibarium blockchain using our interface. Follow these steps to launch your NFT collection.</p>
         </div>
         <div class="section">
             <h2>Prerequisites</h2>
             <ul>
-                <li>MetaMask wallet installed in your browser (<a href="https://metamask.io" target="_blank">download here</a>).</li>
-                <li>Shibarium network configured in MetaMask (chain ID: 109, RPC: <a href="https://rpc.shibariumchain.com" target="_blank">https://rpc.shibariumchain.com</a>).</li>
-                <li>Sufficient BONE (Shibarium native token) or ERC20 tokens for transaction fees and minting.</li>
-                <li>Access to the Woofswap NFT Factory interface.</li>
+                <li>MetaMask wallet installed (<a href="https://metamask.io" target="_blank">download here</a>).</li>
+                <li>Shibarium network added to MetaMask (chain ID: 109, find official RPC URL at <a href="https://www.shibariumscan.io" target="_blank">Shibarium Explorer</a>).</li>
+                <li>Sufficient BONE (Shibarium native token) or ERC20 tokens for gas fees and minting.</li>
+                <li>Access to the Woofswap NFT Factory interface (deployed HTML file).</li>
             </ul>
         </div>
         <div class="section">
@@ -121,107 +127,139 @@
             <h3>1. Connect Your Wallet</h3>
             <ol>
                 <li>Open the Woofswap NFT Factory interface in your browser.</li>
-                <li>Click the <strong>Connect Wallet</strong> button.</li>
-                <li>MetaMask will prompt you to connect. Select your account and approve.</li>
-                <li>Ensure you're on the Shibarium network. The interface will automatically switch if needed.</li>
-                <li>Once connected, the button will show your wallet address (e.g., "Connected: 0x123...4567").</li>
+                <li>Click <strong>Connect Wallet</strong>.</li>
+                <li>In MetaMask, select your account and approve the connection.</li>
+                <li>Ensure you're on Shibarium (chain ID: 109). The interface will prompt to switch if needed.</li>
+                <li>Once connected, the button shows your wallet address (e.g., "Connected: 0x123...4567").</li>
             </ol>
             <h3>2. Create an NFT Contract</h3>
             <ol>
-                <li>In the <strong>Create New NFT Contract</strong> section, enter the following details:
+                <li>In the <strong>Create New NFT Contract</strong> section, fill in:
                     <ul>
-                        <li><strong>NFT Name</strong>: Full name of your NFT collection (e.g., "My Awesome NFT").</li>
-                        <li><strong>NFT Symbol</strong>: Short symbol for your NFTs (e.g., "MANFT").</li>
-                        <li><strong>Max Supply</strong>: Total number of NFTs allowed (e.g., 10000).</li>
-                        <li><strong>Payment Type</strong>: Choose "BONE (Native)" or "ERC20 Token".</li>
-                        <li><strong>Payment Token Address</strong>: For BONE, it’s set to "0x000...000". For ERC20, enter the token contract address.</li>
-                        <li><strong>Mint Price</strong>: Price per NFT in BONE or ERC20 tokens (e.g., 100).</li>
+                        <li><strong>NFT Name</strong>: Collection name (e.g., "My Awesome NFT").</li>
+                        <li><strong>NFT Symbol</strong>: Short symbol (e.g., "MANFT").</li>
+                        <li><strong>Max Supply</strong>: Total NFTs allowed (e.g., 10000).</li>
+                        <li><strong>Payment Type</strong>: Select "BONE (Native)" or "ERC20 Token".</li>
+                        <li><strong>Payment Token Address</strong>: For BONE, it’s "0x000...000". For ERC20, enter the token contract address.</li>
+                        <li><strong>Mint Price</strong>: Price per NFT in BONE or ERC20 tokens (e.g., 100). Fees go to the contract creator (you).</li>
                     </ul>
                 </li>
                 <li>Click <strong>Create NFT Contract</strong>.</li>
-                <li>MetaMask will prompt you to confirm the transaction. Approve it.</li>
-                <li>Wait for the transaction to confirm. The new contract address will appear in the <strong>NFT Contract Address</strong> field.</li>
+                <li>Confirm the transaction in MetaMask.</li>
+                <li>After confirmation, the new contract address appears in the <strong>NFT Contract Address</strong> field.</li>
             </ol>
             <h3>3. View Your Created Contracts</h3>
             <ol>
-                <li>In the <strong>Your Created NFT Contracts (Latest 10)</strong> section, see the latest 10 NFT contracts you created.</li>
-                <li>Each entry shows the NFT name, symbol, and contract address.</li>
-                <li>Click the <strong>Copy</strong> button to copy a contract address for use elsewhere.</li>
+                <li>In the <strong>Your Created NFT Contracts (Latest 10)</strong> section, view up to 10 recently created contracts.</li>
+                <li>Each shows the NFT name, symbol, and address.</li>
+                <li>Click <strong>Copy</strong> to copy a contract address.</li>
             </ol>
-            <h3>4. Set the Base URI for Your NFT Contract</h3>
+            <h3>4. Set the Base URI</h3>
             <ol>
-                <li>In the <strong>Manage NFT Contract</strong> section, enter or paste the NFT contract address.</li>
-                <li>Enter the <strong>Base URI</strong> (e.g., "https://ipfs.io/ipfs/Qm.../") in the provided field.</li>
-                <li>Click <strong>Set Base URI</strong>. Only the contract owner can perform this action.</li>
-                <li>MetaMask will prompt you to confirm. Approve the transaction.</li>
-                <li>Wait for confirmation. The Base URI will be set for all NFTs in the contract.</li>
+                <li>In the <strong>Manage NFT Contract</strong> section, enter the NFT contract address.</li>
+                <li>Enter the <strong>Base URI</strong> (e.g., "https://shibfun.github.io/nft/Royal.json").</li>
+                <li>Click <strong>Set Base URI</strong>. Only the contract creator can do this.</li>
+                <li>Confirm the transaction in MetaMask.</li>
+                <li>After confirmation, the Base URI applies to all NFTs in the contract.</li>
             </ol>
             <h3>5. Mint an NFT</h3>
             <ol>
-                <li>In the <strong>Manage NFT Contract</strong> section, ensure the correct contract address is entered.</li>
+                <li>In the <strong>Manage NFT Contract</strong> section, enter the contract address.</li>
                 <li>Click <strong>Mint NFT</strong>.</li>
-                <li>MetaMask will prompt you to confirm, showing the mint price (in BONE or ERC20 tokens).</li>
-                <li>For ERC20 tokens, you may need to approve the contract to spend your tokens first.</li>
-                <li>Wait for the transaction to confirm. The new NFT will appear in the <strong>Owned NFTs</strong> list.</li>
+                <li>Confirm the transaction in MetaMask, paying the mint price (in BONE or ERC20 tokens) to the contract creator.</li>
+                <li>For ERC20 tokens, approve the contract to spend your tokens if prompted.</li>
+                <li>After confirmation, the NFT appears in the <strong>Owned NFTs</strong> list.</li>
             </ol>
             <h3>6. View Your Owned NFTs</h3>
             <ol>
-                <li>In the <strong>Owned NFTs</strong> section, see the NFTs you own for the selected contract.</li>
-                <li>Each NFT shows its ID (e.g., "NFT ID: 1").</li>
-                <li>Click the <strong>View</strong> button to preview the NFT image (if the Base URI is set correctly).</li>
+                <li>In the <strong>Owned NFTs</strong> section, see NFTs you own for the selected contract.</li>
+                <li>Each shows the NFT ID (e.g., "NFT ID: 1").</li>
+                <li>Click <strong>View</strong> to preview the NFT image (requires a valid Base URI).</li>
             </ol>
         </div>
         <div class="section">
             <h2>Setting Up JSON Metadata (Base URI)</h2>
-            <p>The Base URI is a URL pointing to a JSON file that defines metadata for all NFTs in your contract. This metadata includes the NFT's name, description, and image. Here's how to set it up:</p>
+            <p>The Base URI points to a JSON file defining metadata for all NFTs in your contract (e.g., name, description, image). Here's how to set it up:</p>
             <h3>1. Create the JSON Metadata File</h3>
-            <p>Create a JSON file (e.g., `metadata.json`) with the following structure:</p>
+            <p>Create a JSON file (e.g., `metadata.json`) with this structure:</p>
             <pre>
 {
-    "name": "Your NFT Name",
-    "description": "Description of your NFT collection",
+    "name": "Your NFT Collection",
+    "description": "A unique NFT collection on Shibarium",
     "image": "https://ipfs.io/ipfs/Qm.../image.png"
 }
             </pre>
             <ul>
-                <li><strong>name</strong>: Name of the NFT collection.</li>
-                <li><strong>description</strong>: Brief description of the collection.</li>
-                <li><strong>image</strong>: URL to the NFT image (e.g., hosted on IPFS).</li>
+                <li><strong>name</strong>: Collection name.</li>
+                <li><strong>description</strong>: Collection description.</li>
+                <li><strong>image</strong>: Image URL (e.g., IPFS or GitHub Pages).</li>
             </ul>
-            <p>Note: The Base URI is used for all NFTs in the contract, so this JSON applies to every NFT. If you need unique metadata per NFT, you must set up a server or use a dynamic IPFS folder structure (see advanced setups).</p>
-            <h3>2. Upload the JSON and Image Files</h3>
-            <p>You can host your JSON and image files on IPFS or other platforms. Here are two recommended options:</p>
+            <p>All NFTs share this metadata since the contract uses a single Base URI. For unique metadata per NFT, contact a developer to modify the contract.</p>
+            <h3>2. Host the JSON and Image Files</h3>
+            <p>Host your JSON and image files on IPFS or a web server. Recommended options:</p>
             <h4>Option 1: IPFS (Using Pinata)</h4>
             <ol>
-                <li>Sign up for a free account at <a href="https://pinata.cloud" target="_blank">Pinata</a>.</li>
-                <li>Upload your image file (e.g., `image.png`) to Pinata. Copy the IPFS URL (e.g., "https://ipfs.io/ipfs/Qm.../image.png").</li>
-                <li>Update your `metadata.json` with the image URL.</li>
-                <li>Upload `metadata.json` to Pinata. Copy the IPFS URL (e.g., "https://ipfs.io/ipfs/Qm.../metadata.json").</li>
-                <li>Use this URL as the <strong>Base URI</strong> in the NFT contract.</li>
+                <li>Sign up at <a href="https://pinata.cloud" target="_blank">Pinata</a>.</li>
+                <li>Upload your image (e.g., `image.png`). Copy the IPFS URL (e.g., "https://ipfs.io/ipfs/Qm.../image.png").</li>
+                <li>Update `metadata.json` with the image URL.</li>
+                <li>Upload `metadata.json`. Copy the IPFS URL (e.g., "https://ipfs.io/ipfs/Qm.../metadata.json").</li>
+                <li>Use this URL as the Base URI.</li>
             </ol>
-            <h4>Option 2: NFT.Storage</h4>
+            <h4>Option 2: GitHub Pages</h4>
+            <ol>
+                <li>Create a GitHub repository (<a href="https://github.com" target="_blank">GitHub</a>).</li>
+                <li>Upload your image and `metadata.json` (e.g., `nft/metadata.json`).</li>
+                <li>Enable GitHub Pages in the repository’s <strong>Settings > Pages</strong>, selecting the main branch.</li>
+                <li>Get the URL (e.g., "https://yourusername.github.io/your-repo/nft/metadata.json").</li>
+                <li>Use this URL as the Base URI.</li>
+            </ol>
+            <h4>Option 3: NFT.Storage</h4>
             <ol>
                 <li>Sign up at <a href="https://nft.storage" target="_blank">NFT.Storage</a>.</li>
-                <li>Upload your image and JSON files via the web interface or API.</li>
-                <li>Retrieve the IPFS URLs for your files.</li>
-                <li>Use the JSON file’s URL as the <strong>Base URI</strong>.</li>
+                <li>Upload image and JSON files via the web interface.</li>
+                <li>Copy the IPFS URLs.</li>
+                <li>Use the JSON URL as the Base URI.</li>
             </ol>
-            <h3>3. Set the Base URI in the NFT Contract</h3>
-            <p>Follow the steps in "Set the Base URI for Your NFT Contract" above to apply the Base URI to your NFT contract. Ensure the URL is publicly accessible.</p>
+            <h3>3. Set the Base URI</h3>
+            <p>Follow the "Set the Base URI" steps above to apply the URL to your NFT contract. Ensure the URL is publicly accessible.</p>
+        </div>
+        <div class="section">
+            <h2>Hosting the NFT Factory Interface</h2>
+            <p>Host the Woofswap NFT Factory interface (`index.html`) on a web platform. Options include:</p>
+            <h3>GitHub Pages</h3>
+            <ol>
+                <li>Create a GitHub repository.</li>
+                <li>Upload `index.html` and this guide (`user_guide.html`).</li>
+                <li>In <strong>Settings > Pages</strong>, select the main branch and root folder.</li>
+                <li>Save to get a URL (e.g., "https://yourusername.github.io/your-repo").</li>
+                <li>Access the interface at the URL.</li>
+            </ol>
+            <h3>Vercel</h3>
+            <ol>
+                <li>Sign up at <a href="https://vercel.com" target="_blank">Vercel</a>.</li>
+                <li>Create a project, connecting your GitHub repository.</li>
+                <li>Vercel deploys automatically, providing a URL (e.g., "https://your-project.vercel.app").</li>
+                <li>Access the interface at the URL.</li>
+            </ol>
+            <h3>Other Options</h3>
+            <ul>
+                <li><strong>Netlify</strong>: Drag `index.html` to <a href="https://app.netlify.com/drop" target="_blank">Netlify Drop</a>.</li>
+                <li><strong>Firebase Hosting</strong>: Deploy via <a href="https://firebase.google.com/docs/hosting" target="_blank">Firebase</a>.</li>
+            </ul>
         </div>
         <div class="section">
             <h2>Troubleshooting</h2>
             <ul>
-                <li><strong>Wallet not connecting</strong>: Ensure MetaMask is installed and unlocked. Try refreshing the page.</li>
-                <li><strong>Network error</strong>: Verify that MetaMask is on the Shibarium network (chain ID: 109).</li>
-                <li><strong>Insufficient funds</strong>: Ensure you have enough BONE for gas fees and minting (or ERC20 tokens for minting).</li>
-                <li><strong>Invalid Base URI</strong>: Check that the Base URI points to a valid JSON file and is publicly accessible.</li>
-                <li><strong>NFT image not loading</strong>: Verify the image URL in your JSON metadata is correct and accessible.</li>
+                <li><strong>Wallet not connecting</strong>: Ensure MetaMask is installed and unlocked. Refresh the page.</li>
+                <li><strong>Network error</strong>: Verify Shibarium (chain ID: 109) is selected in MetaMask.</li>
+                <li><strong>Insufficient funds</strong>: Check BONE balance for gas and minting, or ERC20 tokens for minting.</li>
+                <li><strong>Invalid Base URI</strong>: Ensure the Base URI points to a valid JSON file and is accessible.</li>
+                <li><strong>NFT image not loading</strong>: Verify the image URL in the JSON metadata is correct.</li>
             </ul>
         </div>
         <div class="dog-section">
             <img src="https://raw.githubusercontent.com/Shibfun/ChainBridge/refs/heads/main/images/shiba.gif" alt="Shiba Dog">
-            <div class="dog-message">Woof! Have fun creating your NFTs, pup!</div>
+            <div class="dog-message">Woof! Create your NFT empire, pup!</div>
         </div>
     </div>
 </body>
